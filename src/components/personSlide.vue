@@ -627,6 +627,7 @@ export default {
 				localStorage.serUserId = item.userId;
 				localStorage.joinWay = item.joinway;
 				localStorage.openid = item.openid;
+				localStorage.weiuserId = item.weiuserid;
 				//不发送任何信息只是为了触发时间
 				this.$root.Bus.$emit("select_service_user", "");
 			    this.$root.Bus.$emit("customer_list_choose", item);
@@ -675,21 +676,26 @@ export default {
     },
     //退出接待
     quitNews(userid){
-   
-      this.$axios.get("list/customer/closeDialog",{params:{
-				crm_token:localStorage.crm_token,
-				userIds: userid,
-				shopId: localStorage.shopId,
-				custId: localStorage.custId
-			}}).then((res)=>{
-				//如果推出的是当前会话用户，则关闭会话面板页
-				if(userid==localStorage.serUserId){
-					localStorage.serUserId="";
-					this.$root.Bus.$emit("customer_list_choose", '');
-				}
-			});
-			
-	   this.memberList.splice(userid,1);
+      this.$confirm('此操作会拒绝接受此用户信息?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$axios.get("list/customer/closeDialog",{params:{
+          crm_token:localStorage.crm_token,
+          userIds: userid,
+          shopId: localStorage.shopId,
+          custId: localStorage.custId
+        }}).then((res)=>{
+          //如果推出的是当前会话用户，则关闭会话面板页
+          if(userid==localStorage.serUserId){
+            localStorage.serUserId="";
+            this.$root.Bus.$emit("customer_list_choose", '');
+          }
+        });
+        this.memberList.splice(userid,1);
+      }).catch(() => {      
+      });
     },
     //退出排队
     quitQueue(key){

@@ -18,8 +18,8 @@ module.exports = {
             '/list': {
                 //线上地址
 //              target: 'http://192.168.27.113:8087/list',
-//              target: 'http://192.168.0.232:8087/list',
-                target: 'http://192.168.0.118:8080',
+                target: 'http://192.168.0.232:8087/list',
+                // target: 'http://192.168.0.118:8080',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/list': ''
@@ -79,7 +79,7 @@ module.exports = {
         // Paths
         assetsRoot: path.resolve(__dirname, '../dist'),
         assetsSubDirectory: 'static',
-        assetsPublicPath: './',
+        assetsPublicPath: '/user/',
 
         /**
          * Source Maps

@@ -22,14 +22,14 @@ export default {
     }
   },
     created(){
-  	this.$root.Bus.$on("customer_list_choose", value=>{
-  		if (value){
-  			this.display=1;
-  			this.userInfo=value;
-				this.userInfo.userTransfer=false;
-  			this.userChoosed = false;
-  		}
-    })
+    	this.$root.Bus.$on("customer_list_choose", value=>{
+    		if (value){
+    			this.display=1;
+    			this.userInfo=value;
+  				this.userInfo.userTransfer=false;
+    			this.userChoosed = false;
+    		}
+      })
   }
 }
 </script>

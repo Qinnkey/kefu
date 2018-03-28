@@ -5,7 +5,7 @@
 				该客户在以下渠道进行过咨询，点击下方查看聊天记录
 			</div>
 		  	<el-tabs v-model="activeName" @tab-click="handleClick">
-		    	<el-tab-pane label="手机商城" name="first">
+		    	<el-tab-pane :label="windowType" name="first">
 		    		<ul id="chat_record_history_news" ref="chat_record">
 		    			<li v-for="item in chat_record_phone_data" :id="'chat_record' + item.messageid" class="chat_record_info_div">
 							<div v-if="item.sendway=='userway'" class="flex_start">
@@ -16,14 +16,13 @@
 									<span class="uName">{{item.username}}</span>
 									&nbsp;&nbsp;&nbsp;&nbsp;
 									<span class="time">{{item.createtime}}</span>
-									<div class="font_style"  v-if ="item.msgtype=='text'">
-										{{item.message}}
+									<div class="font_style"  v-if ="item.msgtype=='text'" v-html="emoji(item.message)">
 									</div>
 			    					<div v-if="item.msgtype == 'goods'" class="product_infor" @click="go_product_detail(item)">
 			    						<div class="product_name">{{item.product_name}}</div>
 			    						<div class="product_detail">
 			    							<img :src="item.product_imgurl" alt="" />
-			    							<span>{{item.product_price}}</span>
+			    							<span class="rmb">￥{{item.product_price}}</span>
 			    						</div>
 			    					</div>
 			    					
@@ -37,7 +36,6 @@
 										</el-dialog>
 			    						<img :src="item.message" alt="" @close="close_img(item)" @click="view_img(val)"/>
 			    					</div>
-			    					
 			    					
 			    					<div v-if="item.msgtype == 'miniprogrampage'" class="product_infor" @click="go_product_detail(item)">
 			    						<!-- <p class = "title">小程序卡片</p> -->
@@ -138,6 +136,7 @@
 		data(){
 			return{
 //				dialogTableVisible: true,
+				windowType:'',
 				imgUrl:'',
 				custHeadUrl:"",
 				activeName: 'first',
@@ -154,7 +153,8 @@
 					}
 				],
 				innerVisible:false,
-				id:null//当前选中服务用户，滚动一页最小消息id记录，用户向上翻页判断加载消息起点
+				id:null,//当前选中服务用户，滚动一页最小消息id记录，用户向上翻页判断加载消息起点
+				emojiData:emoji_data,
 			}
 		},
 		mounted(){
@@ -163,6 +163,57 @@
 			
 		},
 		methods:{
+			createIcon (item) {
+				// console.log(item);
+				// return;
+		       // item = '[' + item + ']'
+		      // console.log('----')
+		      // const value = this.emojiData.indexOf(item) + '.gif';
+		      // const path = '../static/images/emoji/';
+		      // return '<img class="emoji" src="" width="20px" height="20px" />';
+		        const value = this.emojiData.indexOf(item) + '.gif';
+		        const path = '../static/images/emoji/'
+		        return `<img class="emoji" src=${path}${value} width="20px" height="20px">`
+		    },
+		    emoji (value) {
+		    	// console.log(value)
+		      if (!value) return
+		        // console.log(this.emojiData);
+		       // console.log(11111111)
+		      var that = this;
+		      this.emojiData.forEach(item => {
+		        // console.log(item)
+		        // console.log(that.createIcon(item))
+		        // item = item.substr(1,item.length - 2);
+		        // console.log(item)
+		        // console.log(new RegExp(item, 'g'))
+		        // var _item = '[爱你]';
+		        var smile = item.split("=="); 
+		        var str = smile[0].substr(1,smile[0].length - 2);
+		        if(smile[1]){
+		        	var str1 = smile[1].substr(1,smile[1].length - 2);
+		        }
+		        // console.log(str1)
+		        // console.log('-------------')
+		        if(str1){
+		        	var _regex = new RegExp("\\[("+ str1 + ")+?\\]", 'g');
+		        	if(value.indexOf('['+ str1 +']') != -1){
+		        		value = value.replace(_regex, this.createIcon(item));
+		        	}
+		        }
+		        // var _regex = new RegExp("/"+ str +"/", 'g');
+		        // var _regex = new RegExp('23233', 'g');、
+		        // console.log(str)
+		        var _r = escape(str);
+		        var _s = escape(value);
+		        var re = new RegExp(_r, 'g');
+		        if(_s.indexOf(_r) != -1){
+		        	value = unescape(_s.replace(re, this.createIcon(item)));
+		        }
+		        // value = value.replace(_regex, this.createIcon(item));
+		      })
+		      return value
+		    },
 			handleClick(tab, event) {
         		console.log(tab, event);
       		},
@@ -190,6 +241,15 @@
 				if (n){
 					var a= 1;
 					//向上滚动添加滚动事件
+					
+					if (localStorage.joinWay){
+						if (localStorage.joinWay == 'small'){
+							this.windowType = '微信小程序'
+						}else{
+							this.windowType = "微信商城"
+						}
+					}
+					
 					this.$nextTick(()=>{
 						setTimeout(()=>{
 							this.$refs.chat_record.scrollTop = 10000

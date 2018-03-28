@@ -266,8 +266,37 @@ export default {
 
 
   methods:{
+    // createIcon (item) {
+    //    item = '[' + item + ']'
+    //   // console.log('----')
+    //   // const value = this.emojiData.indexOf(item) + '.gif';
+    //   // const path = '../static/images/emoji/';
+    //   // return '<img class="emoji" src="" width="20px" height="20px" />';
+    //     const value = this.emojiData.indexOf(item) + '.gif';
+    //     const path = '../static/images/emoji/'
+    //     return `<img class="emoji" src=${path}${value} width="20px" height="20px">`
+    // },
+    // emoji (value) {
+    //   if (!value) return
+    //     // console.log(this.emojiData);
+    //    // console.log(11111111)
+    //   var that = this;
+    //   this.emojiData.forEach(item => {
+    //     // console.log(item)
+    //     // console.log(that.createIcon(item))
+    //     // item = item.substr(1,item.length - 2);
+    //     // console.log(item)
+    //     // console.log(new RegExp(item, 'g'))
+    //     // var _item = '[爱你]';
+    //     item = item.substr(1,item.length - 2);
+    //     var _regex = new RegExp("\\[("+ item + ")+?\\]", 'g');
+    //     value = value.replace(_regex, this.createIcon(item));
+    //   })
+    //   return value
+    // },
     createIcon (item) {
-       item = '[' + item + ']'
+    // return;
+       // item = '[' + item + ']'
       // console.log('----')
       // const value = this.emojiData.indexOf(item) + '.gif';
       // const path = '../static/images/emoji/';
@@ -288,9 +317,30 @@ export default {
         // console.log(item)
         // console.log(new RegExp(item, 'g'))
         // var _item = '[爱你]';
-        item = item.substr(1,item.length - 2);
-        var _regex = new RegExp("\\[("+ item + ")+?\\]", 'g');
-        value = value.replace(_regex, this.createIcon(item));
+        var smile = item.split("=="); 
+        var str = smile[0].substr(1,smile[0].length - 2);
+        if(smile[1]){
+          var str1 = smile[1].substr(1,smile[1].length - 2);
+        }
+        // console.log(str1)
+        // console.log('-------------')
+        if(str1){
+          var _regex = new RegExp("\\[("+ str1 + ")+?\\]", 'g');
+          if(value.indexOf('['+ str1 +']') != -1){
+            value = value.replace(_regex, this.createIcon(item));
+          }
+        }
+        // var _regex = new RegExp("/"+ str +"/", 'g');
+        // var _regex = new RegExp('23233', 'g');、
+        // console.log(str)
+        // console.log(str)
+        var _r = escape(str);
+        var _s = escape(value);
+        var re = new RegExp(_r, 'g');
+        if(_s.indexOf(_r) != -1){
+          value = unescape(_s.replace(re, this.createIcon(item)));
+        }
+        // value = value.replace(_regex, this.createIcon(item));
       })
       return value
     },
@@ -359,7 +409,7 @@ export default {
             this.id = this.msg_items[0]['messageid'];
         }
         var that = this;
-    this.$axios.get("list/message/dialogMessageList",{params:{
+    this.$axios.get("/list/message/dialogMessageList",{params:{
         userid:this.userId,
         shopid:this.shopId,
         messageid:this.id,
@@ -655,16 +705,16 @@ export default {
         if (!this.wordReplace(this.inputWords)=="") {
            var time = new Date().getHours()+":"+new Date().getMinutes()+":"+new Date().getSeconds();
            var msg={
-              shopid:this.shopId,
-              userid:this.userId,
-               username:this.username,
-               sendway:'userway',
-               headurl:this.headurl,
-               message:this.inputWords,
-               msgtype:this.msgType,
-               product_name:'',
-               product_imgurl:'',
-               product_price:''
+               shopid:this.shopId,
+               userid:this.userId,
+	           username:this.username,
+	           sendway:'userway',
+	           headurl:this.headurl,
+	           message:this.inputWords,
+	           msgtype:this.msgType,
+	           product_name:'',
+	           product_imgurl:'',
+	           product_price:''
            };
           if (this.msgType == 'goods'){
               msg.product_name=this.messageProduct.product_name;
@@ -707,7 +757,7 @@ export default {
     wordReplace(words) { 
         let newWords;
         
-        if (words ){
+        if (words){
           newWords = words.replace(/<\/?.+?>/g,""); 
           newWords = words.replace(/[\r\n]/g, ""); 
           newWords = words.replace(/\s+/g, "");
@@ -733,17 +783,15 @@ export default {
           this.socket.emit('message', {
                    userid: this.userId,
                    shopid:this.shopId,
-                   message:res.data,
+                   message:res.data.url,
                    username:this.username,
                    sendway:"userway",
                    msgtype:'image',
                    headurl:this.headurl
                  });
-              
-              
-              this.inputWords=res.data;
+                        
               this.msgType = 'image'
-              this.inputWords = res.data;
+              this.inputWords = res.data.url;
               this.submitNews();
       }
       

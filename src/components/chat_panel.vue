@@ -275,6 +275,7 @@
       			quickMesId:'',//编辑快捷回复id
       			quickReplyNum  : 500,	//输入字数
       			emojiData:emoji_data,
+      			// emojiData:[],
       			mediaId:'',
       			resultErr:''
       			
@@ -296,6 +297,7 @@
 		    this.$root.Bus.$off('select_service_page');
 		},
 		mounted(){
+			// console.log(this.emojiData)
 			//切换用户，消息滚动到底部
 			this.$root.Bus.$on("customer_list_choose", value=>{
 				if (value){
@@ -345,16 +347,16 @@
 						}}).then((res)=>{
 							if (res.data.code =='100'){
 								if (res.data.data.list != null && res.data.data.list != ''){
-									console.log('加载消息返回--滚动--',res.data.data.list);
+									console.log('加载消息返回--滚动--',);
 
 									//向上翻页，存取最小id
 									if (this.msg_items.length > 0) {
-										this.id = this.msg_items[0]['messageid'];
+										var tempId = this.msg_items[0]['messageid'];
 										this.msg_items = res.data.data.list.reverse().concat(this.msg_items);
 										// console.log(this.msg_items);
-										
+										this.id = this.msg_items[0]['messageid'];
 										this.$nextTick(()=>{
-											var ele = document.getElementById(this.id);
+											var ele = document.getElementById(tempId);
 											this.$refs.char_msg.scrollTop = ele.offsetTop;
 										})
 									}
@@ -388,9 +390,6 @@
 		                }
 		            })
 				}
-				
-				
-				
 				if(!(this.$refs.char_msg.offsetHeight + this.$refs.char_msg.scrollTop + 30 > this.$refs.char_msg.scrollHeight)){
 					this.newMessage =true;
 				}
@@ -448,7 +447,9 @@
 	
 		methods:{
 			createIcon (item) {
-		       item = '[' + item + ']'
+				// console.log(item);
+				// return;
+		       // item = '[' + item + ']'
 		      // console.log('----')
 		      // const value = this.emojiData.indexOf(item) + '.gif';
 		      // const path = '../static/images/emoji/';
@@ -469,9 +470,29 @@
 		        // console.log(item)
 		        // console.log(new RegExp(item, 'g'))
 		        // var _item = '[爱你]';
-		        item = item.substr(1,item.length - 2);
-		        var _regex = new RegExp("\\[("+ item + ")+?\\]", 'g');
-		        value = value.replace(_regex, this.createIcon(item));
+		        var smile = item.split("=="); 
+		        var str = smile[0].substr(1,smile[0].length - 2);
+		        if(smile[1]){
+		        	var str1 = smile[1].substr(1,smile[1].length - 2);
+		        }
+		        // console.log(str1)
+		        // console.log('-------------')
+		        if(str1){
+		        	var _regex = new RegExp("\\[("+ str1 + ")+?\\]", 'g');
+		        	if(value.indexOf('['+ str1 +']') != -1){
+		        		value = value.replace(_regex, this.createIcon(item));
+		        	}
+		        }
+		        // var _regex = new RegExp("/"+ str +"/", 'g');
+		        // var _regex = new RegExp('23233', 'g');、
+		        // console.log(str)
+		        var _r = escape(str);
+		        var _s = escape(value);
+		        var re = new RegExp(_r, 'g');
+		        if(_s.indexOf(_r) != -1){
+		        	value = unescape(_s.replace(re, this.createIcon(item)));
+		        }
+		        // value = value.replace(_regex, this.createIcon(item));
 		      })
 		      return value
 		    },
@@ -1048,7 +1069,7 @@
 		 				text-overflow: ellipsis;
 		 				white-space: nowrap;
 		 				position:relative;
-		 				top:5px;
+		 				top:0px;
 			 		}
 			 		.pNum{
 			 			cursor: pointer;
@@ -1209,12 +1230,17 @@
 							margin-left: 15px;
 							word-wrap: break-word;
     						word-break: break-all;
+    						
+							text-align: center;
 							&::after{
 								.rowStyle;
 								left: -5px;
 							}
 							img{
-								border-radius:0%
+								border-radius:0%;
+								max-width: 300px;
+								max-height: 200px;
+								width:auto;
 							}
 						}
 					}
@@ -1235,7 +1261,10 @@
 								right: -5px;
 							}
 							img{
-								border-radius:0%
+								border-radius:0%;
+								max-width: 300px;
+								max-height: 200px;
+								width:auto;
 							}
 						}
 					}

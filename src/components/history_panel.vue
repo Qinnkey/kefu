@@ -188,7 +188,7 @@
 </template>
 
 <script>
-	import vueEmoji from '@/components/emoji.vue'
+	// import vueEmoji from '@/components/emoji.vue'
 	import RightContent from '@/components/right_content'
 	import picture_upload from '@/components/picture_upload'
 	import chat_record from '@/components/chat_record'
@@ -273,10 +273,11 @@
       			quickReplyWords: "",	//快速回复内容
       			quickMesId:'',//编辑快捷回复id
       			quickReplyNum  : 1000,	//输入字数
+      			emojiData:emoji_data,
       			
 			}
 		},
-		components: { vueEmoji, RightContent , picture_upload ,chat_record},
+		components: { RightContent , picture_upload ,chat_record},
 		beforeDestroy(){
 		   this.$root.Bus.$off('select_service_page');
 		},
@@ -337,17 +338,17 @@
 									console.log(this.pageNum)
 									//先倒叙，然后取第一条
 									//向上翻页，存取最小id
-									if (this.msg_items.length > 0){
+									//向上翻页，存取最小id
+									if (this.msg_items.length > 0) {
+										var tempId = this.msg_items[0]['messageid'];
+										this.msg_items = res.data.data.list.reverse().concat(this.msg_items);
+										// console.log(this.msg_items);
 										this.id = this.msg_items[0]['messageid'];
+										this.$nextTick(()=>{
+											var ele = document.getElementById(tempId);
+											this.$refs.char_msg.scrollTop = ele.offsetTop;
+										})
 									}
-									
-									this.msg_items = res.data.data.list.reverse().concat(this.msg_items);
-									// console.log(this.msg_items);
-									this.$nextTick(()=>{
-										var ele = document.getElementById(this.id);
-										this.$refs.char_msg.scrollTop = ele.offsetTop;
-									})
-									
 								//结果为空，则不再加载数据
 								}else{
 									flag = false;
@@ -393,6 +394,57 @@
 
 	
 		methods:{
+			createIcon (item) {
+				// console.log(item);
+				// return;
+		       // item = '[' + item + ']'
+		      // console.log('----')
+		      // const value = this.emojiData.indexOf(item) + '.gif';
+		      // const path = '../static/images/emoji/';
+		      // return '<img class="emoji" src="" width="20px" height="20px" />';
+		        const value = this.emojiData.indexOf(item) + '.gif';
+		        const path = '../static/images/emoji/'
+		        return `<img class="emoji" src=${path}${value} width="20px" height="20px">`
+		    },
+		    emoji (value) {
+		    	// console.log(value)
+		      if (!value) return
+		        // console.log(this.emojiData);
+		       // console.log(11111111)
+		      var that = this;
+		      this.emojiData.forEach(item => {
+		        // console.log(item)
+		        // console.log(that.createIcon(item))
+		        // item = item.substr(1,item.length - 2);
+		        // console.log(item)
+		        // console.log(new RegExp(item, 'g'))
+		        // var _item = '[爱你]';
+		        var smile = item.split("=="); 
+		        var str = smile[0].substr(1,smile[0].length - 2);
+		        if(smile[1]){
+		        	var str1 = smile[1].substr(1,smile[1].length - 2);
+		        }
+		        // console.log(str1)
+		        // console.log('-------------')
+		        if(str1){
+		        	var _regex = new RegExp("\\[("+ str1 + ")+?\\]", 'g');
+		        	if(value.indexOf('['+ str1 +']') != -1){
+		        		value = value.replace(_regex, this.createIcon(item));
+		        	}
+		        }
+		        // var _regex = new RegExp("/"+ str +"/", 'g');
+		        // var _regex = new RegExp('23233', 'g');、
+		        // console.log(str)
+		        var _r = escape(str);
+		        var _s = escape(value);
+		        var re = new RegExp(_r, 'g');
+		        if(_s.indexOf(_r) != -1){
+		        	value = unescape(_s.replace(re, this.createIcon(item)));
+		        }
+		        // value = value.replace(_regex, this.createIcon(item));
+		      })
+		      return value
+		    },
 			//用来加载对应的数据
 			loadData(){
 				//获取客服的头像
@@ -1074,12 +1126,17 @@
 							margin-left: 15px;
 							word-wrap: break-word;
     						word-break: break-all;
+    						
+    						text-align: center;
 							&::after{
 								.rowStyle;
 								left: -5px;
 							}
 							img{
-								border-radius:0%
+								border-radius:0%;
+								max-width: 300px;
+								max-height: 200px;
+								width:auto;
 							}
 						}
 					}
@@ -1095,12 +1152,17 @@
 							margin-right: 15px;
 							word-wrap: break-word;
     						word-break: break-all;
+    						
+    						text-align: center;
 							&::after{
 								.rowStyle(#e5f6ff, 45deg);
 								right: -5px;
 							}
 							img{
-								border-radius:0%
+								border-radius:0%;
+								max-width: 300px;
+								max-height: 200px;
+								width:auto;
 							}
 						}
 					}

@@ -24,7 +24,6 @@
                     <div class="dialogue-inner">
                         <div class="js-message-list message-list">
                             <div class="list-finished" v-if = "noMessage">已经没有更多消息了</div>
-
                             <div class="js-list b-list" v-for="item in msg_items" :id="'kefu_chat_record' + item.messageid">
                                 <div class="message-item image" :class="item.sendway == 'userway' ? 'out' : 'in'"   v-if="item.msgtype == 'image' ">
                                     <div class="message-time">
@@ -333,7 +332,6 @@ export default {
                         if(this.id){
                             setTimeout(()=>{
                                 var ele = document.getElementById('kefu_chat_record' + this.id);
-                                    console.log(ele);
                                 document.getElementsByClassName('js-list-viewport')[0].scrollTop = ele.offsetTop;
                                  this.flag = true;
                             },600)
@@ -693,7 +691,7 @@ export default {
     		  this.socket.emit('message', {
                    userid: this.userId,
                    shopid:this.shopId,
-                   message:res.data,
+                   message:res.data.url,
                    username:this.username,
                    sendway:"userway",
                    msgtype:'image',
@@ -701,9 +699,9 @@ export default {
 	               });
       	      
       	      
-      	      this.inputWords=res.data;
       	      this.msgType = 'image'
-      	      this.inputWords = res.data;
+      	      this.inputWords = res.data.url;
+      	   
       	      this.submitNews();
     	}
     	

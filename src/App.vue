@@ -9,7 +9,7 @@
       </section> -->
       <!-- 消息语音提醒 -->
       <audio id="play1">
-            <source src="../static/videos/notice.wav"></source>
+          <source src="../static/videos/notice.wav"></source>
       </audio>
       <router-view/>
     </section>

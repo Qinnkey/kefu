@@ -19,7 +19,7 @@ Vue.prototype.$axios=axios;
 
 Vue.config.productionTip = false
 
-var userIo = 'http://localhost:8082/im/user';
+var userIo = 'http://183.129.196.178:8082/im/user';
 // console.log(io)
 var socket = io.connect(userIo);
 Vue.prototype.socket = socket;

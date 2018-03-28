@@ -150,7 +150,7 @@
 				console.log("获取用户订单详情---------------------------");
 				this.$http.get('/list/order/getUserOrders',{
 					params:{
-						userId: localStorage.serUserId,
+						userId: localStorage.weiuserId,
 						shopId: localStorage.shopId,
 //						userId: 17633,
 //						shopId: 167,

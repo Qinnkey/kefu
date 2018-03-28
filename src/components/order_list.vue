@@ -169,7 +169,7 @@
 							&:hover{background: #F5F5F5;}
 							.orderInfo{
 								padding: 10px;
-								width: calc(~"100% - 136px");
+								width: calc(~"100% - 236px");
 								height:100%;
 								overflow:hidden;
 								img{

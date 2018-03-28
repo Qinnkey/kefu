@@ -19,8 +19,8 @@ module.exports = {
 			'/list': {
 				//线上地址
 //				target: 'http://192.168.27.113:8087/list',
-//				target: 'http://192.168.0.232:8087/list',
-			    target: 'http://192.168.0.118:8080',
+				target: 'http://192.168.0.232:8087/list',
+			    // target: 'http://127.0.0.1:8080',
 				changeOrigin: true,
 				pathRewrite: {
 					'^/list': ''
@@ -28,9 +28,9 @@ module.exports = {
 			},
 			'/api': {
 				//线上地址
-				target: 'https://www.huisou.cn/api',
-//				target: 'https://hsshop.huisou.cn/api',
-				// target: 'http://localhost:8080',
+//				target: 'https://www.huisou.cn/api',
+				target: 'https://hsshop2.huisou.cn/api',
+//				 target: 'http://localhost:8080',
 
 				changeOrigin: true,
 				pathRewrite: {

@@ -17,7 +17,7 @@
       <!-- 右侧开始 -->
       <section class="content">
         <section class="servant-content-body">
-            <span class="servant-refresh-btn">刷新</span>
+            <!-- <span class="servant-refresh-btn">刷新</span> -->
             <div class="zent-tabs servant-manager-wrap">
                 <div class="zent-tabs-nav zent-tabs-size-normal zent-tabs-type-normal zent-tabs-align-left">
                     <el-tabs type="card" @tab-click="handleClick" v-model="activeName2">
@@ -31,7 +31,9 @@
                         <div class="item admin-online" v-for="(item,key) in shopCustList">
                             <figure class="bg-pic circle-bg-pic servant-pic">
                                 <div class="bg-pic-content" :style="{backgroundImage: 'url('+item.headurl+')'}"></div>
-                                <i class="dot state-light"></i>
+                                <i class="dot state-light" v-show="tab_index == 0"></i>
+                                <i class="dot state-light state-busy" v-show="tab_index == 1"></i>
+                                <i class="dot state-light state-offline" v-show="tab_index == 2"></i>
                             </figure>
                             <span class="admin-title">
                                 <span>{{item.custname}}</span>
@@ -101,10 +103,13 @@ export default {
     changeStatus(value){
         if(value == 'online'){
             this.isOnline = "1";
+            this.tab_index = 0;
         }else if(value == 'busy'){
             this.isOnline = "1";
+            this.tab_index = 1;
         }else{
             this.isOnline = "0";
+            this.tab_index = 2;
         }
     },
   	//获取客服在线人数
@@ -166,21 +171,20 @@ export default {
     },
     handleClick(tab, event) {
       if(tab.name=='online'){
+       this.tab_index = 0;
        this.shopCustList = this.onlineList;
       }if(tab.name=='busy'){
+        this.tab_index = 1;
         this.shopCustList = this.busyList;
       }if(tab.name=='offline'){
-         this.shopCustList = this.offlineList;
+        this.tab_index = 2;
+        this.shopCustList = this.offlineList;
       }
     }
   },
   created(){
-    console.log("-00-0-0----sdf")
-    // this.$root.Bus.$on("kefuStatus", value=>{
-    //     alert(3)
-        
-    // })
-    this.loadData();
+  	//添加延时
+  	setTimeout(this.loadData(),300)
   }
 }
 </script>
@@ -381,6 +385,12 @@ ol, ul {
 }
 .servant-content-body .servant-manager-wrap .item.admin-online .state-light {
     background-color: #3ebd00;
+}
+.servant-content-body .servant-manager-wrap .item.admin-online .state-busy {
+    background-color: #f44;
+}
+.servant-content-body .servant-manager-wrap .item.admin-online .state-offline {
+    background-color: #d0d0d0;
 }
 .servant-content-body .servant-manager-wrap .item .desc {
     font-size: 12px;

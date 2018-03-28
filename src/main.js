@@ -22,13 +22,13 @@ Vue.prototype.globalClick = function (callback) {   //页面全局点击
 }
 
 //测试环境
-var userIo = 'http://192.168.0.118:8082/im/user';
-var custIo = 'http://192.168.0.118:8082/im/agent';
-//线上环境
+var userIo = 'http://183.129.196.178:8082/im/user';
+var custIo = 'http://183.129.196.178:8082/im/agent';
+////线上环境
 //var userIo = 'http://115.236.20.100:8082/im/user';
 //var custIo = 'http://115.236.20.100:8082/im/agent';
-//var userIo = 'http://localhost:8082/im/user';
-//var custIo = 'http://localhost:8082/im/agent';
+// var userIo = 'http://localhost:8082/im/user';
+// var custIo = 'http://localhost:8082/im/agent';
 
 // 路由拦截
 router.beforeEach((to, from, next) => {
